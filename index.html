@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="charsheet.css" type="text/css" media="screen">
+        <meta charset="utf-8" />
+        <title>dCarcosa</title>
+    </head>
+    <body>
+        <div id="wrapper">
+            <div id="head">
+                <center><h1>dCarcosa: The Dice Roller for Carcosa</h1></center>
+            </div>
+            <div id="columns">
+                <div id="leftside">
+                    <center><h2>Hit Dice Generator</h2></center>
+                    <table>
+                        <tr>
+                            <td><b>Hit Dice:</td>
+                            <td><input type="number" name="hitdice" id="hitdice" max="10" min="1" value="1" /></td>
+                        </tr>
+                        <tr>
+                            <td><b>Constitution:</b></td>
+                            <td><input type="number" name="conscore" id="conscore" max="18" min="1" value="9" /></td>
+                        </tr>
+                    </table>
+                    <center>
+                        <button id="btnHitDice">Hit Dice</button>
+                    </center>
+                    <br>
+                </div>
+                <div id="rightside">
+                    <center><h2>Damage Generator</h2>
+                        <button id="btnDamage">Damage</button>
+                    </center>
+                </div>
+            </div>
+            <div id="answerLeft">
+                <p id="hdResults"></p>
+            </div>
+            <div id="answerRight">
+                <p id="damResults"></p>
+            </div>
+            <div id="footer">
+                <center><i>
+                dCarcosa is inspired by the dice conventions detailed in the <a href="http://www.lotfp.com/RPG/">Lamentations of the Flame
+                    Princess' </a><a
+                        href="http://www.lotfp.com/RPG/products/carcosa">Carcosa</a> product created by <a
+                        href="http://psychedelicfantasies.blogspot.com/">Geoffrey McKinney</a>.
+                    <br><br>
+                    Written for my home game and the <a
+                        href="http://dndwithpornstars.blogspot.com/2014/11/enter-this-contest-make-widget-on-twine.html">D&D With Porn Stars Official
+                        Digital Widget Contest</a>.</br>
+                </center> </i>
+            </div>
+        </div>
+        <script src="functions.js"></script>
+        <script>
+            var hdButton = document.getElementById( 'btnHitDice' );
+            var damButton = document.getElementById( 'btnDamage' );
+            var hdOutput = document.getElementById( 'hdResults' );
+            var damOutput = document.getElementById( 'damResults' );
+            var hdValues = [];
+            var curHdValues = [];
+            var x = dX(20);
+            var die = dieType(x);
+            hdButton.addEventListener( "click", function( ev ) {
+                hdOutput.innerHTML = "";
+                var mod = getConModifier( document.getElementById( 'conscore' ).value );
+                if( isNaN( parseFloat( document.getElementById( 'hitdice' ).value ) ) ) {
+                    hdOutput.innerHTML = hdOutput.innerHTML + 'Hit Dice must by a number';
+                    return;
+                }
+                if( isNaN( parseFloat( document.getElementById( 'conscore' ).value ) ) ) {
+                    hdOutput.innerHTML = hdOutput.innerHTML + 'Constitution Score  must by a number';
+                    return;
+                }
+                if( document.getElementById( 'hitdice' ).value > 10 ) {
+                    hdOutput.innerHTML = hdOutput.innerHTML + 'Only Support 10 Hit Dice';
+                    return;
+                }
+                if( document.getElementById( 'conscore' ).value > 18 ) {
+                    hdOutput.innerHTML = hdOutput.innerHTML + 'Max Constitution Score is 18';
+                    return;
+                }
+                hdOutput.innerHTML = hdOutput.innerHTML + 'Die Type: d' + die + '<br>';
+                hdOutput.innerHTML = hdOutput.innerHTML + 'Constitution Modifier: ' + mod + '<br><hr>';
+                for( c = 1; c <= document.getElementById('hitdice' ).value; c++ ){
+                    h = dX( die ) + mod;
+                    if( h < 1 ) {
+                        h = 1;
+                    }
+                    hdValues[c] = h;
+                    curHdValues[c] = h;
+                    hdOutput.innerHTML = hdOutput.innerHTML + 'Hit Dice ' + c + ': <img src="images/plus.gif" id="' + c + '" onclick="incClick(this)"> is: <span id="hd' +
+                        c + '"> ' + h + '</span> of ' + h +' <img src="images/minus.gif" id="' + c + '" onclick="decClick(this)"> <br>';
+                }
+            }, false );
+            damButton.addEventListener( "click", function( ev ) { 
+                var dieRolls = []
+                damOutput.innerHTML = "";
+                var d20 = dX( 20 );
+                dieRolls[12] = dX( 12 );
+                dieRolls[10] = dX( 10 );
+                dieRolls[8] = dX( 8 );
+                dieRolls[6] = dX( 6 );
+                dieRolls[4] = dX( 4 );
+                var die = dieType( d20 );
+                damOutput.innerHTML = damOutput.innerHTML + "<b>Die Type:</b> d" + die + " <b>Damage:</b> " + dieRolls[die];
+            }, false );
+        </script>
+    </body>
+</html>
